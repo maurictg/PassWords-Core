@@ -11,8 +11,11 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("PassWordsCore")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("HenkSharp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyCopyrightAttribute("maurictg (c) 2019")]
+[assembly: System.Reflection.AssemblyDescriptionAttribute("PassWordsCore allows you to create an easy and simple password manager without an" +
+    "y trouble.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("PassWordsCore")]

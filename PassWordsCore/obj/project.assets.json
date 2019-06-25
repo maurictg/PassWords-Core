@@ -4696,11 +4696,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\maurict\\Documents\\GitHub\\OpenBible\\PassWords-Core\\PassWordsCore\\PassWordsCore.csproj",
+      "projectUniqueName": "C:\\Users\\maurict\\Documents\\GitHub\\PassWords-Core\\PassWordsCore\\PassWordsCore.csproj",
       "projectName": "PassWordsCore",
-      "projectPath": "C:\\Users\\maurict\\Documents\\GitHub\\OpenBible\\PassWords-Core\\PassWordsCore\\PassWordsCore.csproj",
+      "projectPath": "C:\\Users\\maurict\\Documents\\GitHub\\PassWords-Core\\PassWordsCore\\PassWordsCore.csproj",
       "packagesPath": "C:\\Users\\maurict\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\maurict\\Documents\\GitHub\\OpenBible\\PassWords-Core\\PassWordsCore\\obj\\",
+      "outputPath": "C:\\Users\\maurict\\Documents\\GitHub\\PassWords-Core\\PassWordsCore\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -4714,6 +4714,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Users\\maurict\\Documents\\Nuget": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
