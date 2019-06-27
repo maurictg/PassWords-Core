@@ -295,15 +295,14 @@ namespace PassWordsCore
                 var obj = JsonConvert.DeserializeObject<DBObject>(json);
 
                 //Import database
-                var db = obj.Database;
-
-                if (CreateDB("_" + db.Name, db.Passhash))
+                using(var context = new PassContext())
                 {
-                    db = GetDB("_" + db.Name);
-                    if(db != null)
+                    context.Databases.Add(new DB {Name = "_"+obj.Database.Name, Passhash = obj.Database.Passhash, TwoFactorSecret = obj.Database.TwoFactorSecret });
+                    var db = GetDB("_" + obj.Database.Name);
+                    if (db != null)
                     {
                         List<Account> toadd = new List<Account>();
-                        foreach(var a in obj.Accounts)
+                        foreach (var a in obj.Accounts)
                         {
                             a.DbID = db.Id;
                             toadd.Add(a);
@@ -318,9 +317,6 @@ namespace PassWordsCore
                         return false;
                     }
                 }
-                else
-                    return false;
-
             }
             catch (Exception e) { Console.WriteLine(e.Message); return false; }
         }
@@ -544,7 +540,8 @@ namespace PassWordsCore
                     acc.Password = a.Password;
                     acc.Description = a.Description;
                     acc.Title = a.Title;
-                    context.Update(acc);
+                    acc.Type = a.Type;
+                    context.Accounts.Update(acc);
                     context.SaveChanges();
                 }
                 return true;
