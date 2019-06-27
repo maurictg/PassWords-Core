@@ -98,3 +98,32 @@ db.Add2FA();
 string secret = db.Get2FA();
 
 //Logout
+db.Logout(); 
+
+//When you login now, 
+db.Login("YourDBName","YourPassword");
+//you will get
+LoginResult.Needs2FA;
+
+//Now you have to use your 2FA app and enter the code:
+db.Login2FA("000000");//your code
+//If returns true, you are logged in
+
+//Remove 2FA from database: (first login() and login2fa())
+db.Remove2FA();
+```
+
+## Validating another application that uses 2FA using PassWords
+```csharp
+//First, update an account and set the TwoFactorSecret property to your secret
+var testaccount = accounts.First(a => a.Title == "MyAccount");
+testaccount.TwoFactorSecret = "MYSECRET";
+
+//Second, login into an application with MyAccount
+
+//Generate key (remember => every 30 seconds it changes so you have to generate a new one) 
+string code = Database.GenerateCode("MYSECRET");
+//Enter the code and log in.
+```
+
+# For further or more detailed usage of PassWordsCore, see the wiki (that will be added in the future)
