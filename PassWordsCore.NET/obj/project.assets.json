@@ -4094,10 +4094,10 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "2.0.1",
+    "version": "2.0.2",
     "restore": {
       "projectUniqueName": "C:\\Users\\maurict\\Documents\\GitHub\\PassWords-Core\\PassWordsCore.NET\\PassWordsCore.NET.csproj",
-      "projectName": "PassWordsCore.NET",
+      "projectName": "PassWordsCore",
       "projectPath": "C:\\Users\\maurict\\Documents\\GitHub\\PassWords-Core\\PassWordsCore.NET\\PassWordsCore.NET.csproj",
       "packagesPath": "C:\\Users\\maurict\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\maurict\\Documents\\GitHub\\PassWords-Core\\PassWordsCore.NET\\obj\\",
