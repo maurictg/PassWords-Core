@@ -79,3 +79,22 @@ List<DB> alldatabases = Database.ListDatabases();
 Database.EnsureDeleted();
 ```
 
+# Two factor authentication
+
+You can use 2FA for making the login to the database more secure, 
+but you can also use PassWords to validate a 2FA login into another system.
+
+## Using 2FA in PassWords
+```csharp
+//First, login into your database
+static Database db = new Database();
+db.Login("YourDBName","YourPassword");
+
+//Second, enable 2FA login
+db.Add2FA();
+
+//Third, get your secret
+//Use this secret into another 2FA app
+string secret = db.Get2FA();
+
+//Logout

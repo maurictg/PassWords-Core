@@ -163,6 +163,25 @@ namespace PassWordsCore
             }
         }
 
+        /// <summary>
+        /// Logs the current db out
+        /// </summary>
+        /// <returns></returns>
+        public bool Logout()
+        {
+            if (!_IsLoggedIn)
+                return false;
+
+            _Password = null;
+            _Salt = null;
+            _Tries = 0;
+            _Database = null;
+            _Needs2FA = false;
+            _IsLoggedIn = false;
+
+            return true;
+        }
+
         public bool Login2FA(string code)
         {
             if (!_Needs2FA)
