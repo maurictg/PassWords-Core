@@ -64,6 +64,11 @@ db.UpdatePassword("oldpass","newpass");
 db.Backup("destinationpath/database.db");
 ```
 
+## Step 8b: Import database
+```
+Database.Restore("destinationpath/database.db");
+```
+
 ## Step 9: Delete database
 ```csharp
 Database.DeleteDB("YourDBName");
@@ -124,6 +129,12 @@ testaccount.TwoFactorSecret = "MYSECRET";
 //Generate key (remember => every 30 seconds it changes so you have to generate a new one) 
 string code = Database.GenerateCode("MYSECRET");
 //Enter the code and log in.
+```
+
+## Generate a random string
+```csharp
+Database.RandomString(10,true); //Length = 10, letters = true
+Database.RandomString(15,true,true,true,true); //Length = 15, letters, capitals numbers and special chars
 ```
 
 # For further or more detailed usage of PassWordsCore, see the wiki (that will be added in the future)
