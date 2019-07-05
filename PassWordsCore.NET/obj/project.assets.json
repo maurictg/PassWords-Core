@@ -1556,6 +1556,7 @@
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
+        ".signature.p7s",
         "lib/net20/Newtonsoft.Json.dll",
         "lib/net20/Newtonsoft.Json.xml",
         "lib/net35/Newtonsoft.Json.dll",
@@ -4094,7 +4095,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "2.0.3",
+    "version": "2.0.4",
     "restore": {
       "projectUniqueName": "C:\\Users\\maurict\\Documents\\GitHub\\PassWords-Core\\PassWordsCore.NET\\PassWordsCore.NET.csproj",
       "projectName": "PassWordsCore",

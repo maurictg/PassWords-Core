@@ -242,13 +242,13 @@ namespace PassWordsCore
         /// Returns current database 2FA secret
         /// </summary>
         /// <returns>Secret (string)</returns>
-        public string Get2FA() { return _Database.TwoFactorSecret; }
+        public string Get2FA() => _Database.TwoFactorSecret;
 
 
         //Two factor authentication helpers
-        public static string GenerateCode(string secret){ return new TwoFactor(secret).GenerateCode(); }
-        public static string GenerateSecret() { return TwoFactor.GenerateSecret(); }
-        public static bool Validate2FA(string secret, string code){ return new TwoFactor(secret).ValidateCode(code); }
+        public static string GenerateCode(string secret) => new TwoFactor(secret).GenerateCode();
+        public static string GenerateSecret() => TwoFactor.GenerateSecret(); 
+        public static bool Validate2FA(string secret, string code) => new TwoFactor(secret).ValidateCode(code);
         
 
         /// <summary>
@@ -298,6 +298,7 @@ namespace PassWordsCore
                 using(var context = new PassContext())
                 {
                     context.Databases.Add(new DB {Name = "_"+obj.Database.Name, Passhash = obj.Database.Passhash, TwoFactorSecret = obj.Database.TwoFactorSecret });
+                    context.SaveChanges();
                     var db = GetDB("_" + obj.Database.Name);
                     if (db != null)
                     {
@@ -309,7 +310,6 @@ namespace PassWordsCore
                         }
 
                         return AddRange(toadd.ToArray());
-
                     }
                     else
                     {
@@ -364,11 +364,6 @@ namespace PassWordsCore
                     try
                     {
                         _Database.Passhash = Easy.Hashing.Hash(newpass);
-                        /*var db = context.Databases.First(d => d.Id == _Database.Id);
-                        db.Passhash = Easy.Hashing.Hash(newpass);
-                        context.Databases.Update(db);
-                        context.SaveChanges();
-                        return UpdateEncryption(newpass);*/
                         context.Databases.Update(_Database);
                         context.SaveChanges();
                         return UpdateEncryption(newpass);
@@ -411,13 +406,7 @@ namespace PassWordsCore
         /// List all virtual databases in your database
         /// </summary>
         /// <returns>List of databases</returns>
-        public static List<DB> ListDatabases()
-        {
-            using(var context = new PassContext())
-            {
-                return context.Databases.ToList();
-            }
-        }
+        public static List<DB> ListDatabases() =>  new PassContext().Databases.ToList();
 
         /// <summary>
         /// Create a new virtual database into your database
@@ -541,6 +530,7 @@ namespace PassWordsCore
                     acc.Description = a.Description;
                     acc.Title = a.Title;
                     acc.Type = a.Type;
+                    acc.TwoFactorSecret = a.TwoFactorSecret;
                     context.Accounts.Update(acc);
                     context.SaveChanges();
                 }
