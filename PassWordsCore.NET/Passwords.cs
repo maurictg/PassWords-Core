@@ -18,6 +18,7 @@
  *  DEALINGS IN THE SOFTWARE.
  */
 
+
 using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,7 @@ namespace PassWordsCore
         public int Id { get; set; }
         public string Name { get; set; }
         public string Passhash { get; set; }
+        public string Salt { get; set; }
         public string TwoFactorSecret { get; set; }
     }
 
@@ -124,6 +126,11 @@ namespace PassWordsCore
             return a;
         }
 
+        //To get some property's when signed in
+        public string Name() => _Database.Name;
+
+
+
         /// <summary>
         /// Opens and verifys an virtual database
         /// </summary>
@@ -147,7 +154,7 @@ namespace PassWordsCore
                     _Tries = 0;
                     _Database = db;
                     _Password = password;
-                    _Salt = db.Name+"$*(!@#$)"+db.Name;
+                    _Salt = db.Salt;
 
                     if (!string.IsNullOrEmpty(db.TwoFactorSecret))
                     {
@@ -249,7 +256,38 @@ namespace PassWordsCore
         public static string GenerateCode(string secret) => new TwoFactor(secret).GenerateCode();
         public static string GenerateSecret() => TwoFactor.GenerateSecret(); 
         public static bool Validate2FA(string secret, string code) => new TwoFactor(secret).ValidateCode(code);
-        
+
+        private static Random _random = new Random();
+        /// <summary>
+        /// Generate a random string
+        /// </summary>
+        /// <param name="length">The length of the string</param>
+        /// <param name="letters">If you want to use lowercase letters</param>
+        /// <param name="captials">If you want to use uppercase letters</param>
+        /// <param name="numbers">If you want to use numbers</param>
+        /// <param name="special">If you want to use special chars</param>
+        /// <returns>A random string</returns>
+        public static string RandomString(int length, bool letters = true, bool captials = false, bool numbers = false, bool special = false)
+        {
+            const string scaptials = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string snumbers = "0123456789";
+            const string sletters = "abcdefghijklmnopqrstuvwxyz";
+            const string sspecial = "!@#$%^&*()-=_+;<>?,.{}[]";
+
+            string chars = "";
+            if (letters)
+                chars += sletters;
+            if (captials)
+                chars += scaptials;
+            if (numbers)
+                chars += snumbers;
+            if (special)
+                chars += sspecial;
+
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[_random.Next(s.Length)]).ToArray());
+        }
+
 
         /// <summary>
         /// Creates the database file in which te virtual databases are stored if it does not exist
@@ -297,7 +335,7 @@ namespace PassWordsCore
                 //Import database
                 using(var context = new PassContext())
                 {
-                    context.Databases.Add(new DB {Name = "_"+obj.Database.Name, Passhash = obj.Database.Passhash, TwoFactorSecret = obj.Database.TwoFactorSecret });
+                    context.Databases.Add(new DB {Name = "_"+obj.Database.Name, Passhash = obj.Database.Passhash, TwoFactorSecret = obj.Database.TwoFactorSecret, Salt = obj.Database.Salt });
                     context.SaveChanges();
                     var db = GetDB("_" + obj.Database.Name);
                     if (db != null)
@@ -423,7 +461,7 @@ namespace PassWordsCore
                     if (context.Databases.Any(e => e.Name == name))
                         return false;
 
-                    DB d = new DB { Name = name, Passhash = Easy.Hashing.Hash(password) };
+                    DB d = new DB { Name = name, Passhash = Easy.Hashing.Hash(password), Salt = $"A{name}$*(!@#$){name}a" };
 
                     context.Databases.Add(d);
                     context.SaveChanges();
