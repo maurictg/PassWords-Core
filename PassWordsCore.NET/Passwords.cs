@@ -94,9 +94,11 @@ namespace PassWordsCore
         private bool _IsLoggedIn = false;
         private bool _Needs2FA = false;
 
+        private Easy.Encryption _Encryption { get; set; }
+
         //Private functions used for encryption
-        private string Encrypt(string input){return new Easy.Encryption(Aes.Create(), _Password, _Salt).Encrypt(input);}
-        private string Decrypt(string input) { return new Easy.Encryption(Aes.Create(), _Password, _Salt).Decrypt(input); }
+        private string Encrypt(string input){return _Encryption.Encrypt(input);}
+        private string Decrypt(string input) { return _Encryption.Decrypt(input); }
 
         //Private function used to encrypt an account
         private Account Encrypt(Account a)
@@ -155,6 +157,7 @@ namespace PassWordsCore
                     _Database = db;
                     _Password = password;
                     _Salt = db.Salt;
+                    _Encryption = new Easy.Encryption(Aes.Create(), _Password, _Salt, 10000);
 
                     if (!string.IsNullOrEmpty(db.TwoFactorSecret))
                     {
@@ -185,6 +188,7 @@ namespace PassWordsCore
             _Database = null;
             _Needs2FA = false;
             _IsLoggedIn = false;
+            _Encryption = null;
 
             return true;
         }
