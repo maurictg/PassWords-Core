@@ -97,8 +97,8 @@ namespace PassWordsCore
         private Easy.Encryption _Encryption { get; set; }
 
         //Private functions used for encryption
-        private string Encrypt(string input){return _Encryption.Encrypt(input);}
-        private string Decrypt(string input) { return _Encryption.Decrypt(input); }
+        private string Encrypt(string input) => _Encryption.Encrypt(input);
+        private string Decrypt(string input) => _Encryption.Decrypt(input); 
 
         //Private function used to encrypt an account
         private Account Encrypt(Account a)
@@ -111,6 +111,7 @@ namespace PassWordsCore
             a.Username = Encrypt(a.Username);
             a.Password = Encrypt(a.Password);
             a.Description = Encrypt(a.Description);
+            a.TwoFactorSecret = Encrypt(a.TwoFactorSecret);
             return a;
         }
 
@@ -125,12 +126,12 @@ namespace PassWordsCore
             a.Username = Decrypt(a.Username);
             a.Password = Decrypt(a.Password);
             a.Description = Decrypt(a.Description);
+            a.TwoFactorSecret = Decrypt(a.TwoFactorSecret);
             return a;
         }
 
         //To get some property's when signed in
         public string Name() => _Database.Name;
-
 
 
         /// <summary>
@@ -261,7 +262,7 @@ namespace PassWordsCore
         public static string GenerateSecret() => TwoFactor.GenerateSecret(); 
         public static bool Validate2FA(string secret, string code) => new TwoFactor(secret).ValidateCode(code);
 
-        private static Random _random = new Random();
+        private static Random _Random = new Random();
         /// <summary>
         /// Generate a random string
         /// </summary>
@@ -289,7 +290,7 @@ namespace PassWordsCore
                 chars += sspecial;
 
             return new string(Enumerable.Repeat(chars, length)
-              .Select(s => s[_random.Next(s.Length)]).ToArray());
+              .Select(s => s[_Random.Next(s.Length)]).ToArray());
         }
 
 
@@ -383,9 +384,8 @@ namespace PassWordsCore
                 {
                     List<Account> unencrypted = new List<Account>();
                     foreach(var a in acc)
-                    {
                        unencrypted.Add(Decrypt(a));
-                    }
+
                     return unencrypted;
                 }
             }
@@ -423,10 +423,11 @@ namespace PassWordsCore
             {
                 var acc = GetAccounts();
                 _Password = newpass;
-                foreach(var account in acc)
-                {
+                _Encryption = new Easy.Encryption(Aes.Create(), _Password, _Salt, 10000);
+
+                foreach (var account in acc)
                     Update(account);
-                }
+
                 return true;
             }
             catch(Exception e) { Console.WriteLine(e.Message); return false; }
@@ -504,9 +505,8 @@ namespace PassWordsCore
                 using (var context = new PassContext())
                 {
                     foreach (var a in ac)
-                    {
                         context.Accounts.Add(a);
-                    }
+
                     context.SaveChanges();
                     return true;
                 }
