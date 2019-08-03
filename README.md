@@ -54,9 +54,10 @@ var testaccount = accounts.First(a => a.Title == "MyAccount");
 db.Delete(testacccount);
 ```
 
-## Step 7: Change database password
+## Step 7: Change database password or name
 ```csharp
 db.UpdatePassword("oldpass","newpass");
+db.UpdateName("NewDBName");
 ```
 
 ## Step 8: Backup database
@@ -65,8 +66,8 @@ db.Backup("destinationpath/database.db");
 ```
 
 ## Step 8b: Import database
-```
-Database.Restore("destinationpath/database.db");
+```csharp
+Database.Restore("destinationpath/database.db","MyDatabase");
 ```
 
 ## Step 9: Delete database
