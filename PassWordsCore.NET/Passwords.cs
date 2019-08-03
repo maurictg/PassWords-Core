@@ -131,6 +131,10 @@ namespace PassWordsCore
         }
 
         //To get some property's when signed in
+        /// <summary>
+        /// Returns the name of the current databse
+        /// </summary>
+        /// <returns>string name, if null: you are not logged in</returns>
         public string Name() => _Database.Name;
 
 
@@ -177,7 +181,7 @@ namespace PassWordsCore
         /// <summary>
         /// Logs the current db out
         /// </summary>
-        /// <returns></returns>
+        /// <returns>false if already logged out, else true</returns>
         public bool Logout()
         {
             if (!_IsLoggedIn)
@@ -194,6 +198,11 @@ namespace PassWordsCore
             return true;
         }
 
+        /// <summary>
+        /// Validates the 2fa code to login into the database
+        /// </summary>
+        /// <param name="code">The 6-digit validation code</param>
+        /// <returns>True or false, when true: database is logged in</returns>
         public bool Login2FA(string code)
         {
             if (!_Needs2FA)
@@ -258,8 +267,23 @@ namespace PassWordsCore
 
 
         //Two factor authentication helpers
+        /// <summary>
+        /// Generates a 2fa authentication code
+        /// </summary>
+        /// <param name="secret">The secret</param>
+        /// <returns>A string, the 6-digit code</returns>
         public static string GenerateCode(string secret) => new TwoFactor(secret).GenerateCode();
+        /// <summary>
+        /// Generates a new 2fa secret
+        /// </summary>
+        /// <returns>A new secret</returns>
         public static string GenerateSecret() => TwoFactor.GenerateSecret(); 
+        /// <summary>
+        /// Validates if 2fa code is correct with the secret
+        /// </summary>
+        /// <param name="secret">The secret</param>
+        /// <param name="code">The 6-digit validation code</param>
+        /// <returns>True or false</returns>
         public static bool Validate2FA(string secret, string code) => new TwoFactor(secret).ValidateCode(code);
 
         private static Random _Random = new Random();
@@ -326,8 +350,9 @@ namespace PassWordsCore
         /// Restores an virtual database into your database
         /// </summary>
         /// <param name="path">The path of your database</param>
+        /// <param name="name">The name you want to use for the database</param>
         /// <returns>True of it succeed, false if it failed</returns>
-        public static bool Restore(string path)
+        public static bool Restore(string path, string name)
         {
             if (!File.Exists(path))
                 return false;
@@ -340,9 +365,10 @@ namespace PassWordsCore
                 //Import database
                 using(var context = new PassContext())
                 {
-                    context.Databases.Add(new DB {Name = "_"+obj.Database.Name, Passhash = obj.Database.Passhash, TwoFactorSecret = obj.Database.TwoFactorSecret, Salt = obj.Database.Salt });
+                    string newname = (string.IsNullOrEmpty(name)) ? "_" + obj.Database.Name : name;
+                    context.Databases.Add(new DB {Name = newname, Passhash = obj.Database.Passhash, TwoFactorSecret = obj.Database.TwoFactorSecret, Salt = obj.Database.Salt });
                     context.SaveChanges();
-                    var db = GetDB("_" + obj.Database.Name);
+                    var db = GetDB(newname);
                     if (db != null)
                     {
                         List<Account> toadd = new List<Account>();
@@ -417,6 +443,38 @@ namespace PassWordsCore
                 return false;
         }
 
+        /// <summary>
+        /// Updates the name of the database
+        /// </summary>
+        /// <param name="newname">The new name for the database</param>
+        /// <returns>bool</returns>
+        public bool UpdateName(string newname)
+        {
+            if (string.IsNullOrEmpty(newname))
+                return false;
+
+            var current = GetDB(_Database.Name);
+            current.Name = newname;
+
+            try
+            {
+                using (var context = new PassContext())
+                {
+                    context.Databases.Update(current);
+                    context.SaveChanges();
+                    _Database = GetDB(current.Name);
+                }
+
+                return true;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+
+        //This will update the encryption using a new password
         private bool UpdateEncryption(string newpass)
         {
             try
@@ -498,6 +556,7 @@ namespace PassWordsCore
             catch { return false; }
         }
 
+        //Add a range of accounts
         private static bool AddRange(Account[] ac)
         {
             try
