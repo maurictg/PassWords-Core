@@ -401,8 +401,10 @@ namespace PassWordsCore
             {
                 var acc = context.Accounts.Where(d => d.DbID == _Database.Id).ToList();
 
-                if (acc.Count() == 0)
-                    return null;
+                if (acc == null)
+                    throw new ArgumentNullException("No accounts found");
+                //if (acc.Count() == 0)
+                 //   return null;
 
                 if (encrypted)
                     return acc;
@@ -425,22 +427,45 @@ namespace PassWordsCore
         /// <returns>False if the current pass is wrong or it failed, true if it succeed</returns>
         public bool UpdatePassword(string oldpass, string newpass)
         {
-            if (oldpass == _Password)
+            try
             {
-                using(var context = new PassContext())
+                var accounts = GetAccounts();
+                if (oldpass == _Password)
                 {
-                    try
+                    using (var context = new PassContext())
                     {
-                        _Database.Passhash = Easy.Hashing.Hash(newpass);
-                        context.Databases.Update(_Database);
-                        context.SaveChanges();
-                        return UpdateEncryption(newpass);
+                        //try
+                        //{
+                            _Database.Passhash = Easy.Hashing.Hash(newpass);
+                            _Password = newpass;
+                            _Encryption = new Easy.Encryption(Aes.Create(), _Password, _Salt, 10000);
+
+                            context.Databases.Update(_Database);
+                            context.SaveChanges();
+
+                        //try
+                        //{
+                        foreach (var account in accounts)
+                            if (!Update(account))
+                                throw new ArgumentException("Updating an entry failed");
+
+                        return true;
+                        //}
+                        //catch (Exception e) { Console.WriteLine(e.Message); return false; }
+
+                        //}
+                        //catch(Exception e) { Console.WriteLine(e.Message); return false; }
                     }
-                    catch(Exception e) { Console.WriteLine(e.Message); return false; }
                 }
+                else
+                    return false;
             }
-            else
-                return false;
+            catch(Exception e)
+            {
+                throw e;
+            }
+
+            
         }
 
         /// <summary>
@@ -472,23 +497,6 @@ namespace PassWordsCore
                 Console.WriteLine(e);
                 return false;
             }
-        }
-
-        //This will update the encryption using a new password
-        private bool UpdateEncryption(string newpass)
-        {
-            try
-            {
-                var acc = GetAccounts();
-                _Password = newpass;
-                _Encryption = new Easy.Encryption(Aes.Create(), _Password, _Salt, 10000);
-
-                foreach (var account in acc)
-                    Update(account);
-
-                return true;
-            }
-            catch(Exception e) { Console.WriteLine(e.Message); return false; }
         }
 
         //Get the database object by name
