@@ -18,7 +18,7 @@ using System.Reflection;
     "n and hashing.\r\nIt also provides 2FA and random string generation. Making PassWo" +
     "rds Easy!")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("2.1.1.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("2.1.1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("2.1.2")]
 [assembly: System.Reflection.AssemblyProductAttribute("PassWordsCore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PassWordsCore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("2.1.1.0")]

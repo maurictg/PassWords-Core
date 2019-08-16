@@ -2061,7 +2061,7 @@
           "lib/netstandard1.3/System.Xml.XPath.XmlDocument.dll": {}
         }
       },
-      "PassWordsCore/2.1.1": {
+      "PassWordsCore/2.1.2": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
@@ -6965,7 +6965,7 @@
         "system.xml.xpath.xmldocument.nuspec"
       ]
     },
-    "PassWordsCore/2.1.1": {
+    "PassWordsCore/2.1.2": {
       "type": "project",
       "path": "../PassWordsCore.NET/PassWordsCore.NET.csproj",
       "msbuildProject": "../PassWordsCore.NET/PassWordsCore.NET.csproj"
@@ -6977,7 +6977,7 @@
       "MSTest.TestFramework >= 1.4.0",
       "Microsoft.NET.Test.Sdk >= 16.0.1",
       "Microsoft.NETCore.App >= 2.2.0",
-      "PassWordsCore >= 2.1.1"
+      "PassWordsCore >= 2.1.2"
     ]
   },
   "packageFolders": {
